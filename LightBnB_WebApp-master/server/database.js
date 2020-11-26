@@ -176,21 +176,4 @@ const addProperty = function(property) {
     .then((res) => res.rows[0])
     .catch(err => console.error('query error', err.stack));
 }
-
-
-  //   let values = [];
-//   let inputValues = `VALUES (`;
-//   for (let key in properties) {
-//     fields = `(${key},`;
-//     values.push(property[key]);
-//     inputValues = `${inputValues} $${values.length},`;
-//   }
-//   query = `INSERT INTO properties ${fields.slice(0, -1)}
-//   ${inputValues.slice(0, -1)})
-//   RETURNING *;`;
-
-//   return pool.query(query, values)
-//     .then((res) => res.rows[0])
-//     .catch(err => console.error('error', err.stack));
-// }
 exports.addProperty = addProperty;
