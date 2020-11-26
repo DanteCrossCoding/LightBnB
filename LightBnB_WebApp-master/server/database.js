@@ -160,9 +160,37 @@ exports.getAllProperties = getAllProperties;
  * @return {Promise<{}>} A promise to the property.
  */
 const addProperty = function(property) {
-  const propertyId = Object.keys(properties).length + 1;
-  property.id = propertyId;
-  properties[propertyId] = property;
-  return Promise.resolve(property);
+  let query = (`INSERT INTO properties`);
+  const values = [];
+  let inputValues = `VALUES (`;
+  for (const key in property) { // assumes that all keys in the property object are valid for the property table
+    fields = `( ${key},`;
+    values.push(property[key]);
+    inputValues = `${inputValues} $${values.length},`;
+  }
+  query = `${query} ${fields.slice(0,-1)})
+  ${inputValues.slice(0,-1)})
+  RETURNING *;`;
+
+  return pool.query(query, values)
+    .then((res) => res.rows[0])
+    .catch(err => console.error('query error', err.stack));
 }
+
+
+  //   let values = [];
+//   let inputValues = `VALUES (`;
+//   for (let key in properties) {
+//     fields = `(${key},`;
+//     values.push(property[key]);
+//     inputValues = `${inputValues} $${values.length},`;
+//   }
+//   query = `INSERT INTO properties ${fields.slice(0, -1)}
+//   ${inputValues.slice(0, -1)})
+//   RETURNING *;`;
+
+//   return pool.query(query, values)
+//     .then((res) => res.rows[0])
+//     .catch(err => console.error('error', err.stack));
+// }
 exports.addProperty = addProperty;
